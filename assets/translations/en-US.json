@@ -1,0 +1,14 @@
+{
+    "main_title": "Happy weather",
+    "welcom_title": "Welcom back",
+    "weather_switch": "How display weather forecast - ",
+    "cp_title": "Current position ",
+    "forecast": "Weather forecast for",
+    "weather": "Weather:",
+    "temp": "Temperature: temp-",
+    "temp_feels": "feels like- ",
+    "cloud": "Clouds: ",
+    "wind": "Wind: speed- ",
+    "deg": "deg-"
+
+}
