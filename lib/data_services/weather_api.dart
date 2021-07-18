@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:collection/collection.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:http/http.dart' as http;
@@ -48,16 +49,10 @@ class WeatherApi {
           body.map((dynamic item) => WeatherModel2.fromJson(item)).toList();
       weather_forecast.forEach((element) {
         var parse_date = DateTime.parse(element.dtTxt);
-        element.dtTxt = parse_date.day.toString();
+        element.dtTxt = DateFormat.yMMMd().format(parse_date);
       });
       var group_by_day =
           groupBy(weather_forecast, (WeatherModel2 obj) => obj.dtTxt);
-      // var group_by_day =
-      //     groupBy(weather_forecast, (WeatherModel obj) => obj.dt_txt);
-      // List forecast_by_day = [];
-      // group_by_day.forEach((key, value) {
-      //   forecast_by_day.add(value);
-      // });
       return group_by_day;
     } else {
       throw ("Can's get data from Api");

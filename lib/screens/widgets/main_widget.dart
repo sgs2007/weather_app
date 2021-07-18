@@ -9,6 +9,8 @@ import 'package:weather_app/data_services/firebase_services_provider.dart';
 import 'package:weather_app/data_services/location.dart';
 import 'package:weather_app/data_services/weather_api.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:weather_app/screens/components/listBuilders/list_forecast_days.dart';
+import 'package:weather_app/screens/components/listBuilders/list_forecast_hours.dart';
 
 class MainWidget extends StatefulWidget {
   const MainWidget({Key? key}) : super(key: key);
@@ -23,7 +25,7 @@ class _MainWidgetState extends State<MainWidget> {
   String? city;
   String? country;
 
-  String weatherForecast = "hours";
+  String weatherForecastDisplay = "hours";
   WeatherApi weatherApi = WeatherApi();
 
   preLoader() async {
@@ -39,78 +41,6 @@ class _MainWidgetState extends State<MainWidget> {
   void initState() {
     preLoader();
     super.initState();
-  }
-
-  Widget ListForecastByHours(Size size) {
-    return Container(
-      child: FutureBuilder(
-        future: weatherApi.getDataByHour(),
-        builder: (context, AsyncSnapshot<List<WeatherModel2>> snapshot) {
-          if (snapshot.hasData) {
-            List<WeatherModel2>? weather = snapshot.data;
-            return Expanded(
-              child: ListView.builder(
-                itemCount: weather!.length,
-                itemBuilder: (context, index) {
-                  return ExpansionWeather(weather[index]);
-                },
-              ),
-            );
-          } else if (snapshot.hasError) {
-            return Container(
-              width: size.width,
-              height: 200,
-              child: Center(
-                child: Text("Can not get from Api or Local DB"),
-              ),
-            );
-          }
-          return Container(
-            width: size.width,
-            height: 200,
-            child: Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  Widget ExpansionWeather(WeatherModel2 weather) {
-    return ExpansionTile(
-      backgroundColor: deepBlueColor,
-      collapsedTextColor: Colors.black,
-      textColor: Colors.white,
-      iconColor: Colors.white,
-      tilePadding: EdgeInsets.all(5),
-      title: Text(
-        "Weather forecast at ${weather.dtTxt}",
-        style: GoogleFonts.workSans(
-          fontSize: 16,
-          fontWeight: FontWeight.w500,
-        ),
-      ),
-      children: [
-        SizedBox(
-          height: 20,
-          child: ListView.builder(
-            itemCount: weather.weather.length,
-            itemBuilder: (context, index) {
-              Weather data = weather.weather[index];
-              return Text(
-                "Weather: ${data.main} / ${data.description}",
-                textAlign: TextAlign.center,
-              );
-            },
-          ),
-        ),
-        Text(
-            "Temperature: temp- ${weather.main.temp} / feels like- ${weather.main.feelsLike}"),
-        Text("Clouds: ${weather.clouds.all}"),
-        Text("Wind: speed- ${weather.wind.speed} / deg- ${weather.wind.deg}"),
-      ],
-    );
   }
 
   @override
@@ -168,10 +98,10 @@ class _MainWidgetState extends State<MainWidget> {
                       ),
                     ),
                     DropdownButton<String>(
-                      value: weatherForecast,
+                      value: weatherForecastDisplay,
                       onChanged: (String? forecast) {
                         setState(() {
-                          weatherForecast = forecast!;
+                          weatherForecastDisplay = forecast!;
                         });
                       },
                       items: <String>["hours", "days"]
@@ -209,7 +139,10 @@ class _MainWidgetState extends State<MainWidget> {
                   height: 15,
                 ),
                 // ListForecastByHours(size),
-                ListForecastByHours(size),
+                // ListForecastByDay(size),
+                (weatherForecastDisplay == "hours")
+                    ? ListForecastByHours(size, weatherApi)
+                    : ListForecastByDay(size, weatherApi),
               ],
             ),
           ),
