@@ -11,6 +11,7 @@ import 'package:weather_app/data_services/weather_api.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:weather_app/screens/components/listBuilders/list_forecast_days.dart';
 import 'package:weather_app/screens/components/listBuilders/list_forecast_hours.dart';
+import 'package:weather_app/services/pushNotification.dart';
 
 class MainWidget extends StatefulWidget {
   const MainWidget({Key? key}) : super(key: key);
@@ -27,6 +28,7 @@ class _MainWidgetState extends State<MainWidget> {
 
   String weatherForecastDisplay = "hours";
   WeatherApi weatherApi = WeatherApi();
+  Notifications? firebaseNotifications;
 
   preLoader() async {
     userDisplayName = await FirebaseAuth.instance.currentUser?.displayName;
@@ -39,8 +41,10 @@ class _MainWidgetState extends State<MainWidget> {
 
   @override
   void initState() {
-    preLoader();
     super.initState();
+    firebaseNotifications = Notifications();
+    firebaseNotifications?.initialize();
+    preLoader();
   }
 
   @override
